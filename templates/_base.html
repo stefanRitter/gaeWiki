@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+    <title>GAE Wiki</title>
+    <link rel="stylesheet" type="text/css" href="/static/application.css">
+  </head>
+
+  <body>
+    <h1>GAE Wiki</h1>
+    <hr>
+    <nav>
+      {% if user %}
+        {{user.name}} (<a href="/logout">logout</a>)
+      {% else %}
+        <a href="/login">login</a>
+        |
+        <a href="/signup">signup</a>
+      {% endif %}
+    </nav>
+
+    {% block content %}
+    {% endblock %}
+  </body>
+</html>

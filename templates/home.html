@@ -1,0 +1,29 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+    <h2>Welcome to my simple Wiki</h2>
+    <div>
+      How-To:
+      <ul>
+        <li>you must be logged in to edit pages</li>
+        <li>type in any URL to create a new page or edit an existing one</li>
+      </ul>
+      <br>
+      <br>
+    </div>
+
+    <hr>
+    <h3>List of all pages created so-far:</h3>
+    {% if pages %}
+      {% for page in pages %}
+      <div>
+        <h2><a href="/{{ page.key().id() }}">{{page.subject}}</a></h2>
+        <p><pre>{{page.content}}</pre></p>
+        <p>{{page.created}}</p>
+      </div>
+      <hr>
+
+      {% endfor %}
+    {% endif %}
+{% endblock %}

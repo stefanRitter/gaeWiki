@@ -16,10 +16,18 @@
 #
 import webapp2
 
+from authenticate import *
+from templates import *
+
+
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-        self.response.write('Hello world!')
+        template = jinja_environment.get_template('home.html')
+        self.response.out.write(template.render())
+
 
 app = webapp2.WSGIApplication([
-    ('/', MainHandler)
+    ('/', MainHandler),
+    ('/signup/?', SignupHandler), ('/login/?', LoginHandler), ('/logout/?', LogoutHandler),
+    ('/.*', MainHandler)
 ], debug=True)
