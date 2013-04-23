@@ -16,19 +16,12 @@
 #
 import webapp2
 
+from wiki import *
 from authenticate import *
-from templates import *
-
-
-class MainHandler(webapp2.RequestHandler):
-    def get(self):
-        pages = Page.all_from_cache()
-        template = jinja_environment.get_template('home.html')
-        self.response.out.write(template.render({'pages': pages}))
 
 
 app = webapp2.WSGIApplication([
-    ('/', MainHandler),
+    ('/', HomeHandler),
     ('/signup/?', SignupHandler), ('/login/?', LoginHandler), ('/logout/?', LogoutHandler),
-    ('/.*', MainHandler)
+    ('/_edit/(.*)', EditHandler), ('/(.*)', WikiHandler)
 ], debug=True)

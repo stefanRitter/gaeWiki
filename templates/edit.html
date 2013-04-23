@@ -1,0 +1,9 @@
+{% extends "_base.html" %}
+
+{% block content %}
+      <h2>editing: {{ name }}</h2>
+      <form method="post">
+        <textarea class="pagecontentfield" name="content">{{ content }}</textarea>
+      <input type="submit" value="save">
+    </form>
+{% endblock %}

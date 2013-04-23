@@ -18,9 +18,8 @@
     {% if pages %}
       {% for page in pages %}
       <div>
-        <h2><a href="/{{ page.key().id() }}">{{page.subject}}</a></h2>
-        <p><pre>{{page.content}}</pre></p>
-        <p>{{page.created}}</p>
+        <h4><a href="/{{ page.subject }}">{{ page.subject }}</a></h4>
+        <p>Created: {{ page.created }}</p>
       </div>
       <hr>
 
