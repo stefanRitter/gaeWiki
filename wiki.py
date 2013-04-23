@@ -21,9 +21,10 @@ class BaseHandler(webapp2.RequestHandler):
 
         self.user = None
         user_id_cookie = self.request.cookies.get('name', None)
-        user_id = check_secure_val(user_id_cookie)
-        if user_id:
-            self.user = User.get_by_id_from_cache(int(user_id))
+        if user_id_cookie:
+            user_id = check_secure_val(user_id_cookie)
+            if user_id:
+                self.user = User.get_by_id_from_cache(int(user_id))
 
 
 class HomeHandler(BaseHandler):
@@ -36,18 +37,21 @@ class WikiHandler(BaseHandler):
     def get(self, page_name):
         page = Page.get_by_name_from_cache(page_name)
         if page:
-            self.render('page.html', {'user': self.user, 'page': page})
+            self.render('page.html', {'user': self.user,
+                                      'page': page, 'edit': page_name})
+
         else:
             self.redirect('/_edit/%s' % page_name)
 
 
 class EditHandler(BaseHandler):
     def get(self, page_name):
-        # check if logged in
+        # only allow edit if logged in
         if self.user:
             page = Page.get_by_name_from_cache(page_name)
             self.render('edit.html',
-                        {'user': self.user, 'name': page_name,
+                        {'user': self.user, 'view': page_name,
+                         'page_name': page_name,
                          'content': page.content if page else ''})
         else:
             self.redirect('/%s' % page_name)

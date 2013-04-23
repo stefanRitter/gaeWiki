@@ -12,6 +12,8 @@
     <hr>
     <nav>
       {% if user %}
+        {% if edit %} <a href="/_edit/{{ edit }}">edit</a> | {% endif %}
+        {% if view %} <a href="/{{ view }}">view</a> | {% endif %}
         {{user.name}} (<a href="/logout">logout</a>)
       {% else %}
         <a href="/login">login</a>

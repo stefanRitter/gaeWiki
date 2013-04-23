@@ -1,7 +1,6 @@
 
 from google.appengine.ext import db
 from google.appengine.api import memcache
-import logging
 
 # memcache keys
 ALLPAGES = 'allpages'
