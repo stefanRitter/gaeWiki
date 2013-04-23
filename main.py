@@ -22,8 +22,9 @@ from templates import *
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
+        pages = Page.all_from_cache()
         template = jinja_environment.get_template('home.html')
-        self.response.out.write(template.render())
+        self.response.out.write(template.render({'pages': pages}))
 
 
 app = webapp2.WSGIApplication([
