@@ -19,7 +19,6 @@ import webapp2
 from wiki import *
 from authenticate import *
 
-
 app = webapp2.WSGIApplication([
     ('/', HomeHandler),
     ('/signup/?', SignupHandler), ('/login/?', LoginHandler), ('/logout/?', LogoutHandler),

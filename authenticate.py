@@ -5,6 +5,7 @@ import datetime
 from hashing import *
 from templates import *
 from data import *
+import wiki
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 PASS_RE = re.compile(r"^.{3,20}$")
@@ -27,8 +28,7 @@ class LogoutHandler(webapp2.RequestHandler):
     def get(self):
         cookie = str('name=; Path=/')
         self.response.headers.add_header('Set-Cookie', cookie)
-
-        self.redirect('/signup')
+        self.redirect(wiki.current_location)
 
 
 class LoginHandler(webapp2.RequestHandler):
@@ -58,7 +58,7 @@ class LoginHandler(webapp2.RequestHandler):
                                                                                      datetime.timedelta(days=30)).strftime('%c')))
                 self.response.headers.add_header('Set-Cookie', cookie)
 
-                self.redirect('/welcome')
+                self.redirect(wiki.current_location)
             else:
                 error = "can't find user or used an invalid password"
                 self.write_form(user_name, error)
@@ -114,7 +114,6 @@ class SignupHandler(webapp2.RequestHandler):
         if not password_error and not email_error and not name_error and not verify_error:
 
             # no error so save user in DB, write to cookie and redirect to welcome page
-
             new_user = User(name=user_name, password=make_pw_hash(user_name, password), email=user_email)
             new_user.put()
             key = str(new_user.key().id())  # get id and convert to string
@@ -122,40 +121,9 @@ class SignupHandler(webapp2.RequestHandler):
                                                                                  datetime.timedelta(days=30)).strftime('%c')))
             self.response.headers.add_header('Set-Cookie', cookie)
 
-            self.redirect('/welcome')
+            self.redirect(wiki.current_location)
 
         else:
             # errors found go back to form and tell user where the problem was
             self.write_form(user_name, user_email, name_error, password_error,
                             verify_error, email_error)
-
-
-welcome = """
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Unit 2 Signup</title>
-  </head>
-
-  <body>
-    <h2>Welcome, %(name)s!</h2>
-  </body>
-</html>
-"""
-
-
-class WelcomeHandler(webapp2.RequestHandler):
-    def get(self):
-        user_id_cookie = self.request.cookies.get('name', None)
-        user_id = check_secure_val(user_id_cookie)
-
-        if user_id and user_id.isdigit():
-            # retrieve users from db
-            user = User.get_by_id(int(user_id))
-
-            if user:
-                self.response.out.write(welcome % {'name': user.name})
-                return
-
-        # not a valid user go back to signup
-        self.redirect('/signup')
