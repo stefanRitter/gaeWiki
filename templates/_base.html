@@ -11,9 +11,12 @@
     <h1>GAE Wiki</h1>
     <hr>
     <nav>
+
+      {% if history %}<a href="/_history/{{ history }}">history</a> |{% endif %}
+      {% if edit %} <a href="/_edit/{{ edit }}">edit</a> | {% endif %}
+      {% if view %} <a href="/{{ view }}">view</a> | {% endif %}
+
       {% if user %}
-        {% if edit %} <a href="/_edit/{{ edit }}">edit</a> | {% endif %}
-        {% if view %} <a href="/{{ view }}">view</a> | {% endif %}
         {{user.name}} (<a href="/logout">logout</a>)
       {% else %}
         <a href="/login">login</a>

@@ -37,8 +37,8 @@ class WikiHandler(BaseHandler):
     def get(self, page_name):
         page = Page.get_by_name_from_cache(page_name)
         if page:
-            self.render('page.html', {'user': self.user,
-                                      'page': page, 'edit': page_name})
+            self.render('page.html', {'user': self.user, 'page': page,
+                                      'history': page_name, 'edit': page_name})
 
         else:
             self.redirect('/_edit/%s' % page_name)
@@ -51,12 +51,15 @@ class EditHandler(BaseHandler):
             page = Page.get_by_name_from_cache(page_name)
             self.render('edit.html',
                         {'user': self.user, 'view': page_name,
-                         'page_name': page_name,
+                         'page_name': page_name, 'history': page_name,
                          'content': page.content if page else ''})
         else:
-            self.redirect('/%s' % page_name)
+            self.redirect('/login')
 
     def post(self, page_name):
+        if not self.user:
+            self.redirect('/login')  # if logged out in the meantime go back
+
         content = self.request.get('content')
         if not content:
             self.redirect('/_edit/%s' % page_name)
@@ -71,3 +74,9 @@ class EditHandler(BaseHandler):
             page.put_in_db_and_cache()
 
         self.redirect('/%s' % page_name)
+
+
+class HistoryHandler(BaseHandler):
+    def get(self, page_name):
+        page = Page.get_by_name_from_cache(page_name)
+        self.render('history.html', {'user': self.user, 'edits': [page, page]})

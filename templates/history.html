@@ -1,0 +1,27 @@
+{% extends "_base.html" %}
+
+{% block content %}
+      <h2>Edit history of &quot;{{ edits[0].subject }}&quot;</h2>
+      <ul class ="alternatinglist">
+        {% for p in edits %}
+        <li>
+          <span>
+            {{ p.content[:20] + '...' }}
+          </span>
+          <span style="float: right;">
+            <a href="#">view</a> | <a href="#">edit</a>
+          </span>
+        </li>
+        {% endfor %}
+        {% for p in edits %}
+        <li>
+          <span>
+            {{ p.content[:20] + '...' }}
+          </span>
+          <span style="float: right;">
+            <a href="#">view</a> | <a href="#">edit</a>
+          </span>
+        </li>
+        {% endfor %}
+      </ul>
+{% endblock %}

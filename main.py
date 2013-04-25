@@ -19,8 +19,9 @@ import webapp2
 from wiki import *
 from authenticate import *
 
+PAGE_RE = r'((?:[a-zA-Z0-9_-]+/?)*)'
 app = webapp2.WSGIApplication([
     ('/', HomeHandler),
     ('/signup/?', SignupHandler), ('/login/?', LoginHandler), ('/logout/?', LogoutHandler),
-    ('/_edit/(.*)', EditHandler), ('/(.*)', WikiHandler)
+    ('/_edit/' + PAGE_RE, EditHandler), ('/_history/' + PAGE_RE, HistoryHandler), ('/' + PAGE_RE, WikiHandler)
 ], debug=True)
