@@ -114,7 +114,7 @@ class SignupHandler(webapp2.RequestHandler):
         if not password_error and not email_error and not name_error and not verify_error:
 
             # no error so save user in DB, write to cookie and redirect to welcome page
-            new_user = User(name=user_name, password=make_pw_hash(user_name, password), email=user_email)
+            new_user = User(parent=User.parent_key(), name=user_name, password=make_pw_hash(user_name, password), email=user_email)
             new_user.put()
             key = str(new_user.key().id())  # get id and convert to string
             cookie = str('name=%s; expires=%s; Path=/' % (make_secure_val(key), (datetime.date.today() +

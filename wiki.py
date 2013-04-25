@@ -67,10 +67,11 @@ class EditHandler(BaseHandler):
 
         page = Page.get_by_name_from_cache(page_name)
         if page:
-            page.content = content
-            page.put_in_db_and_cache(update=True)
+            # if we have a version already then save this one as a new version
+            new_version = Page(subject=page_name, content=content, parent=page)
+            new_version.put_in_db_and_cache(True)
         else:
-            page = Page(subject=page_name, content=content)
+            page = Page(subject=page_name, content=content, parent=Page.parent_key())
             page.put_in_db_and_cache()
 
         self.redirect('/%s' % page_name)

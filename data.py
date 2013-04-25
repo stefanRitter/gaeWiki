@@ -9,6 +9,10 @@ ALLUSERS = 'allusers'
 
 class MemcacheModel(db.Model):
     @classmethod
+    def parent_key(cls):
+        return db.Key.from_path(cls.__name__, cls.__name__ + 's')
+
+    @classmethod
     def _all_from_cache(cls, key):
         client = memcache.Client()
 
@@ -19,6 +23,7 @@ class MemcacheModel(db.Model):
             memcache.set(key, 0)
 
             models = cls.all()
+            models.ancestor(cls.parent_key())
             models = list(models)
 
             while True:  # Retry until written
@@ -90,5 +95,5 @@ class User(MemcacheModel):
             if u.key().id() == int(uid):
                 return u
 
-    def put_in_db_and_cache(self, update=False):
-        self._put_in_db_and_cache(ALLUSERS, update)
+    def put_in_db_and_cache(self):
+        self._put_in_db_and_cache(ALLUSERS, False)
