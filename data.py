@@ -9,7 +9,8 @@ ALLUSERS = 'allusers'
 
 class MemcacheModel(db.Model):
     @classmethod
-    def parent_key(cls):
+    def root_key(cls):
+        # the root to all entity groups is the plural of their class names
         return db.Key.from_path(cls.__name__, cls.__name__ + 's')
 
     @classmethod
@@ -23,7 +24,7 @@ class MemcacheModel(db.Model):
             memcache.set(key, 0)
 
             models = cls.all()
-            models.ancestor(cls.parent_key())
+            models.ancestor(cls.root_key())
             models = list(models)
 
             while True:  # Retry until written

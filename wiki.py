@@ -37,6 +37,11 @@ class WikiHandler(BaseHandler):
     def get(self, page_name):
         page = Page.get_by_name_from_cache(page_name)
         if page:
+            # check if we are looking at specific version
+            v = self.request.get('v')
+            if v and v.isdigit():
+                page = Page.get_by_id(int(v), page.parent_key())
+
             self.render('page.html', {'user': self.user, 'page': page,
                                       'history': page_name, 'edit': page_name})
 
@@ -68,10 +73,14 @@ class EditHandler(BaseHandler):
         page = Page.get_by_name_from_cache(page_name)
         if page:
             # if we have a version already then save this one as a new version
-            new_version = Page(subject=page_name, content=content, parent=page)
+            parent = page.parent_key()
+            if parent == Page.root_key():
+                parent = page.key()
+
+            new_version = Page(subject=page_name, content=content, parent=parent)
             new_version.put_in_db_and_cache(True)
         else:
-            page = Page(subject=page_name, content=content, parent=Page.parent_key())
+            page = Page(subject=page_name, content=content, parent=Page.root_key())
             page.put_in_db_and_cache()
 
         self.redirect('/%s' % page_name)
@@ -80,4 +89,18 @@ class EditHandler(BaseHandler):
 class HistoryHandler(BaseHandler):
     def get(self, page_name):
         page = Page.get_by_name_from_cache(page_name)
-        self.render('history.html', {'user': self.user, 'edits': [page, page]})
+        if page:
+            key = page.parent_key()
+
+            if key == Page.root_key():
+                versions = [page]
+            else:
+                # get the history
+                versions = Page.all()
+                versions.ancestor(page.parent_key())
+                versions.order('-created')
+                versions = list(versions)
+
+            self.render('history.html', {'user': self.user, 'edits': versions})
+        else:
+            self.redirect('/_edit/%s' % page_name)

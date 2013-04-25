@@ -124,6 +124,6 @@ class SignupHandler(webapp2.RequestHandler):
             self.redirect(wiki.current_location)
 
         else:
-            # errors found go back to form and tell user where the problem was
+            # errors found: go back to form and tell user where the problem was
             self.write_form(user_name, user_email, name_error, password_error,
                             verify_error, email_error)

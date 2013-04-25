@@ -6,20 +6,10 @@
         {% for p in edits %}
         <li>
           <span>
-            {{ p.content[:20] + '...' }}
+            {{ p.content[:100] + '...' }}
           </span>
           <span style="float: right;">
-            <a href="#">view</a> | <a href="#">edit</a>
-          </span>
-        </li>
-        {% endfor %}
-        {% for p in edits %}
-        <li>
-          <span>
-            {{ p.content[:20] + '...' }}
-          </span>
-          <span style="float: right;">
-            <a href="#">view</a> | <a href="#">edit</a>
+            <a href="/{{ p.subject }}?v={{ p.key().id() }}">view</a> | <a href="/_edit/{{ p.subject }}">edit</a>
           </span>
         </li>
         {% endfor %}
